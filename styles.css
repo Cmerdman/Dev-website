@@ -1,7 +1,10 @@
 html {
   scroll-behavior: smooth;
 }
-body{background:#ebe8e4}
+body{
+  background:rgb(0, 132, 100);
+  background-image: url("pictures/background_image.png");
+}
 
 
 #container{
@@ -12,13 +15,16 @@ body{background:#ebe8e4}
 }
 
 #ball-box{
-  margin-left: 30%;
+  margin-left: 20%;
 }
 #ball{
   transform: translate3d(0px, 0px, 0px) rotateZ(0rad);
-  width: 50%;
+  width: 75%;
   height: 100%;
 }
+
+
+
 
 
 
