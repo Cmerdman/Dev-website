@@ -1,16 +1,49 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }
-body{
-  background-image: url("pictures/pink_background_image.png");
+#container-of-divs{
+  display: table;
 }
+#opener{
+  background-image: url("pictures/stars_background_image.png");
+  background-color: rgb(91, 92, 193);
+  height: 460px;
+}
+
+#main{
+  background-image: url("pictures/stars_background_image.png");
+  background-color: #120458;
+  height: 1500px;
+  color: #ff124f;
+}
+#opener, #main{
+  padding-bottom: 0;
+  display: table-row;
+  height: auto;
+}
+
 
 #ball-box{
   margin-left: 21%;
+  position: relative;
+  width: auto;
+  height: auto;
+  z-index: 1;
 }
 #ball{
   transform: translate3d(0px, 0px, 0px) rotateZ(0rad);
   width: 73%;
-  height: 100%;
+  height: auto;
 }
 
+#svg-box{
+  width: auto;
+  position: relative;
+  height: auto;
+  z-index: 2;
+}

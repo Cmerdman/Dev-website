@@ -1,56 +1,52 @@
-var ball = document.getElementById("ball");
-var svg_1 = document.getElementById("svg_1");
-var svg_2 = document.getElementById("svg_2");
-var svg_3 = document.getElementById("svg_3");
+var ball = document.getElementById("ball")
 
 window.addEventListener("scroll", bigFun);
 
 function bigFun(){
     rotateBall();
-    dragSvg_1();
-    //dragSvg_2();
-    //dragSvg_3();
+    dragSvg();
+    //colorChnge();
+
 }
 
 function rotateBall(){
-    var x = window.pageYOffset/400;
-    var y = -(window.pageYOffset*1.2);
+    var x = window.pageYOffset/1800;
+    var y = (window.pageYOffset*0.2);
     ball.style.transform = "translate3d(0px, " + y + "px, 0px) rotateZ(" + x + "rad)";
 }
 
-function dragSvg_1(){
-    var x = -document.documentElement.scrollTop/50;
+
+function dragSvg(){
+    var x = -window.pageYOffset/50;
     x = x.toFixed(2);
     var fix;
     var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fix || -1) + '})?');
     fix = x.toString().match(re)[0];
-    if(fix < 10){
-        fix = fix.toString();
-        var y = svg_1.getAttribute('d');
-        var repl = (y.substring(0,10) + fix +" " + y.substring(13,));
-        svg_1.setAttribute('d', repl);
-    }
-    else{
-        fix = fix.toString();
-        var y = svg_1.getAttribute('d');
-        var repl = (y.substring(0,10) + fix + y.substring(13,));
-        svg_1.setAttribute('d', repl);
+    fix= parseInt(fix)
+    for(var i = 1; i < 31; i++){
+        var svg = document.getElementById("svg_" + i.toString());
+        var y = svg.getAttribute('d');
+        if(i<16){
+            var output = -Math.pow((i),1.3) + fix;
+            var fixed;
+            var rer =new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+            fixed = output.toString().match(rer)[0];
+        }else{
+            var output = -Math.pow((31-i),1.3) +fix;
+            var fixed;
+            var rer =new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+            fixed = output.toString().match(rer)[0];
+        }
+        var repl = (y.substring(0,15) + fixed +"  " + y.substring(18,));
+        svg.setAttribute('d', repl);
     }
 }
-//"M 0,0 L 0,-15 L 15,0"
-function dragSvg_2(){
-    var x = -window.pageYOffset/30;
-    x.toPrecision(2);
-    var y = svg_2.getAttribute('d');
-    var repl = (y.substring(0,12) + x.toString() + y.substring(15,));
-    svg_2.setAttribute('d', repl);
-}
-//"M 10,0 L 10,-10 L 25,0"
-function dragSvg_3(){
-    var x = -window.pageYOffset/30;
-    x.toPrecision(2);
-    var y = svg_3.getAttribute('d');
-    var repl = (y.substring(0,14) + x.toString() + y.substring(18,));
-    svg_3.setAttribute('d', repl);
-}//"M 100,0 L 100,-15 L 85,0"
 
+
+function colorChnge(){
+    if(window.pageYOffset < 500){
+        document.getElementById("body" || "body-new").setAttribute("id", "body");
+    }else if(window.pageYOffset > 500){
+        document.getElementById("body" || "body-new").setAttribute("id", "body-new");
+    }
+}
