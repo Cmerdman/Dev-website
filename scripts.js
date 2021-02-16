@@ -10,30 +10,36 @@ function bigFun(){
 }
 
 function rotateBall(){
-    var x = window.pageYOffset/1800;
+    var x = window.pageYOffset/1400;
     var y = (window.pageYOffset*0.2);
     ball.style.transform = "translate3d(0px, " + y + "px, 0px) rotateZ(" + x + "rad)";
 }
 
 
 function dragSvg(){
-    var x = -window.pageYOffset/50;
+    var x = -window.pageYOffset/40;
     x = x.toFixed(2);
     var fix;
     var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fix || -1) + '})?');
     fix = x.toString().match(re)[0];
     fix= parseInt(fix)
-    for(var i = 1; i < 31; i++){
+    for(var i = 1; i < 45; i++){
         var svg = document.getElementById("svg_" + i.toString());
         var y = svg.getAttribute('d');
-        if(i<16){
+        if(i< 23){
             var output = -Math.pow((i),1.3) + fix;
             var fixed;
+            if(output < -99){
+                output = -99;
+            }
             var rer =new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
             fixed = output.toString().match(rer)[0];
         }else{
-            var output = -Math.pow((31-i),1.3) +fix;
+            var output = -Math.pow((45-i),1.3) +fix;
             var fixed;
+            if(output < -99){
+                output = -99;
+            }
             var rer =new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
             fixed = output.toString().match(rer)[0];
         }
@@ -43,10 +49,3 @@ function dragSvg(){
 }
 
 
-function colorChnge(){
-    if(window.pageYOffset < 500){
-        document.getElementById("body" || "body-new").setAttribute("id", "body");
-    }else if(window.pageYOffset > 500){
-        document.getElementById("body" || "body-new").setAttribute("id", "body-new");
-    }
-}

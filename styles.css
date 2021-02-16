@@ -1,6 +1,10 @@
 *{
   margin: 0;
+  font-family: Arial;
   padding: 0;
+}
+ul {
+  padding-left: 30px;
 }
 
 html {
@@ -12,24 +16,15 @@ html {
 #opener{
   background-image: url("pictures/stars_background_image.png");
   background-color: rgb(91, 92, 193);
-  height: 460px;
-}
-
-#main{
-  background-image: url("pictures/stars_background_image.png");
-  background-color: #120458;
-  height: 1500px;
-  color: #ff124f;
+  height: auto;
 }
 #opener, #main{
   padding-bottom: 0;
   display: table-row;
   height: auto;
 }
-
-
 #ball-box{
-  margin-left: 21%;
+  text-align: center;
   position: relative;
   width: auto;
   height: auto;
@@ -37,7 +32,7 @@ html {
 }
 #ball{
   transform: translate3d(0px, 0px, 0px) rotateZ(0rad);
-  width: 73%;
+  width: 65%;
   height: auto;
 }
 
@@ -45,5 +40,48 @@ html {
   width: auto;
   position: relative;
   height: auto;
+  z-index: 3;
+}
+.path{
+  stroke-dasharray: 5;
+  animation: dash 50s linear infinite;
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+
+
+#main{
   z-index: 2;
+  background-color: #120458;
+  height: auto;
+  color: #dd088f;
+  letter-spacing: 0.04em;
+}
+#resume{
+  width: 65%;
+  padding-left: 17.5%;
+}
+#name{
+  text-align: center;
+}
+.tab { margin-left: 40px; }
+tab:before
+    {
+        content: "\00a0\00a0\00a0\00a0";
+    }
+.edge{
+  text-align: right;
+}
+.left{
+  text-align:left;
+}
+.mid{
+  padding-left: 22%;
+  padding-right: 25%;
+}
+.right{
+  float:right;
 }
