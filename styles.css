@@ -8,8 +8,17 @@ body {
 header {
     background-color: #333;
     color: #fff;
-    padding: 1rem 0;
-    text-align: center;
+    padding: 1rem 2rem;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.name {
+    font-size: 1.5rem;
 }
 
 nav ul {
@@ -25,15 +34,76 @@ nav ul li {
 nav a {
     color: #fff;
     text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.social-links a {
+    color: #fff;
+    margin-left: 15px;
+    font-size: 1.5rem;
 }
 
 main {
     padding: 20px;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 20px auto;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.home-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.top-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.headshot img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.resume-section {
+    grid-column: 1 / -1;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.blog-post-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.blog-post {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.blog-post:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.post-date {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.post-title {
+    margin-top: 0;
 }
 
 footer {
