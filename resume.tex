@@ -1,0 +1,223 @@
+%-------------------------
+% Resume in Latex
+% Author : Cameron Erdman
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      % \textit{\small#1} & \textit{\small #2} \\ original
+      \textit{\small#1} & \textnormal{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape Cameron Erdman} \\ \vspace{1pt}
+    % \href{mailto:cmerdman@outlook.com}{\underline{cmerdman@outlook.com}} $|$
+    \href{https://cmerdman.dev}{\underline{cmerdman.dev}} 
+    % $|$ \small 513-515-1592
+    % $|$ \href{https://linkedin.com/in/cmerdman}{\underline{linkedin.com/in/cmerdman}} 
+    %% $|$ \href{https://github.com/...}{\underline{github.com/jake}}
+\end{center}
+
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+   %-----------Georgia Tech-----------
+    \resumeSubheading
+      {Georgia Institute of Technology}{Atlanta, GA}
+      {Masters of Science in Computer Science}{Jan. 2025 -- May 2027}
+    %-----------Ohio State-----------
+    \resumeSubheading
+      {Ohio State University}{Columbus, OH}
+      {Bachelor of Science in Data Analytics; Minors in Economics, Computational Analytics}{Aug. 2020 -- May 2024}
+  \resumeSubHeadingListEnd
+
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+ %-----------JP Morgan-----------
+    \resumeSubheading
+      {JP Morgan Chase}{Sep. 2024 -- Present}
+      {AI \& ML Data Scientist} {}
+  %-----------Data Scientist-----------
+      \resumeItemListStart
+        % Agentic LLM Web testing
+        \resumeItem{Proposed and developed an Agentic AI solution to ingest business needs from Jira's MCP, propose a plan, orchestrate agents and tools, write playwright test scripts, self heal errors and update-broken scripts, and report outcomes in order to automate UI integration testing, a 'x' hour a week monthly task}
+        % Metric Store
+        \resumeItem{Built an internal Metric Store which converts proprietary business logic into SQL based metrics, supporting 'x' metrics across 'x' teams providing up to date derived metrics to 'x' users, leading to an user average 'x'\% time save and a total 'x' monthly cost save.}
+        % Arrow Anomaly Detection
+        \resumeItem{Researched and implemented anomaly detection concepts in SHAP and LIME explainable AI, Autoencoders, LOF and IF models, and Pareto optimality in multi-objective optimization to support an ensemble learning solution for quality checks on multiple financial data sets, x\% accuracy of existing systems while identifying 'x' additional missed anomalies}
+        % Databricks genie
+        \resumeItem{Converted high complexity data investigation tasks into learnable logic to be fed into Databricks Genie spaces, providing a tailored LLM based data analytics tool to ease business user workload}
+        % Teaching webinars on data science topics
+        \resumeItem{Presented multiple internal webinars explaining topics such as Databricks, anomaly detection, and data engineering to groups of 20 to 100 people}
+      \resumeItemListEnd
+  %-----------Data Science Intern-----------
+      \resumeSubSubheading
+        {AI \& ML Data Science Intern} {May 2023 -- Aug. 2023}
+        \resumeItemListStart
+            \resumeItem {Developed a 6 model ensemble anomaly detection workflow to check millions of daily trade contracts for upstream errors in the data engineering pipeline}
+            \resumeItem {Built a data quality process to check the accuracy of incoming and outgoing data streams to support the transition of data pipelines, automating a daily 30 minute task}
+        \resumeItemListEnd
+
+%-----------Dr Christian Blanco-----------
+    \resumeSubheading
+      {Dr Christian Blanco}{Feb. 2022 -- Aug. 2023}
+      {Research Assistant} {}
+      \resumeItemListStart
+        \resumeItem{Contributed to published research showcasing the financial impacts of illegal and unsustainable business practices}
+        \resumeItem{Utilized OpenNLP for named entity extraction and sentiment analysis on 100k documents over 40 years}
+    \resumeItemListEnd
+
+ %-----------Amazon-----------
+    \resumeSubheading
+      {Amazon}{May. 2022 -- Sep. 2022}
+      {Data Analytics Intern} {}
+      \resumeItemListStart
+        \resumeItem{Discovered 500 unresponsive or poor response medical prompts which when routed to our product leads to a boost of 250 to 500 thousand monthly active users}
+        \resumeItem{Performed customer segmentation analysis on the Alexa Health user base and presented my findings to management}
+        \resumeItem{Took over a root cause analysis task after our Business Intelligence Engineer left the team, identified the cause of a metric discrepancy and reworked the SQL query in the ETL pipeline to prevent future errors}
+    \resumeItemListEnd
+
+ % %-----------Translational Data Analytics Institute-----------
+ %    \resumeSubheading
+ %      {Translational Data Analytics Institute}{May. 2021 -- April. 2022}
+ %      {Data Science Intern} {}
+ %      \resumeItemListStart
+ %        \resumeItem{Created a Cron automated Python based Selenium web scraping script to collect affiliated news articles from 45 news sites, eliminating a 10 hour a week task from the news team}
+ %        \resumeItem{Used R and Tableau for network analyses of faculty and associates to display the impact TDAI has had on the community and help secure an additional 2 years of funding}
+ %        \resumeItem{Developed 12 hours of learning material for an Intro to R, Python, and Statistics course for the Masters in Translational Data Analytics program at Ohio State}
+ %    \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{National Ecological Observatory Network Time Series Classification} $|$ \emph{keras}}{September 2021}
+          \resumeItemListStart
+            \resumeItem{Developed Time Series Classification models using Convolutional and Recurrent Neural Networks in Python to single out and determine the status of airplanes at the KOSU airport}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{AEP Power Consumption Profitability Modeling} $|$ \emph{scikit-learn}}{Feb 2021}
+          \resumeItemListStart
+            \resumeItem{Led a team of 15 students to provide insights into AEP’s consumer data}
+            \resumeItem{Presented to AEP’s data science division where I predicted profitability with xgboost to 94 percent accuracy}
+          \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+
+
+% %
+% %-----------PROGRAMMING SKILLS-----------
+% \section{Technical Skills}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{Languages}{: Python, R, SQL, C, JavaScript, HTML/CSS} \\
+%      \textbf{Developer Tools}{: Git, Docker, TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm, IntelliJ, Eclipse} \\
+%      \textbf{Libraries}{: pandas, NumPy, Matplotlib}
+%     }}
+%  \end{itemize}
+
+
+% %-------------------------------------------
+\end{document}
