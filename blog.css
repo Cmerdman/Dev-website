@@ -1,0 +1,32 @@
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.blog-post-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.blog-post {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.blog-post:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.post-date {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.post-title {
+    margin-top: 0;
+}
