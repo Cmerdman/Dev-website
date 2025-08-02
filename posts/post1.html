@@ -36,14 +36,21 @@
         </figure>
         <h2>The Architecture</h2>
         <p><strong>Note:</strong></p>
-        <p>Original paper has layer normalization after attention step, however a 2020 paper(arXiv:2002.04745) showed that normalization before attention stabilizes training, removing need for learning rate warmup. That change is represented here. In the original step they do "Layer Norm(\(X+Z(X)\))" the found-to-be-better approach does "\(X+Z(\text{LayerNorm}(X))\)"</p>
+        <p>The original paper had layer normalization after the attention step, however a 2020 paper(arXiv:2002.04745) showed that normalization before attention stabilizes training, removing need for learning rate warmup. That change is represented here. In the original step they do "Layer Norm(\(X+Z(X)\))" the found-to-be-better approach does "\(X+Z(\text{LayerNorm}(X))\)"</p>
         <ol>
-        <li><strong>Tokenizing:</strong> Inputs must be tokenized into numerical representations of words
+        <li><strong>Tokenization:</strong> Inputs must be tokenized into their base properties 
         <ul>
         <li>A token can represent a character or a short segment of characters</li>
+        <li>Example: He won't move -> He, won, ', t, move</li>
+        <li>The exact way to tokenize the input depends on the implementation but typically we break up punctuation and complex words</li>
         </ul>
         </li>
+        <br>
         <li><strong>Embedding:</strong> Tokens are then embedded based on a one hot encoding of the token times an embedding matrix</li>
+        <ul>
+        <li>This result is a unique vector belonging to a n dimensional space. The embedding matrix is a learned matrix via another training proccess</li>
+        </ul>
+        <br>
         <li><strong>Positional Encoding:</strong> Embedding vectors are then mapped to a matrix by taking sin and cosine representations of the position to create a unique probability frequency representing the location of the embedding vector in the input.
         <ul>
         <li>Alternates matrix frequencies by sin and cos to ensure uniqueness other position 1 and 6 in a space of 5 would have the same frequency</li>
@@ -52,10 +59,11 @@
         <li>d is a tunable parameter and often is the same as the word embedding dimension (for easier math), often 512, 768, or 1024 by your embedding function</li>
         </ul>
         </li>
-        <li>N is a parameter in positional encoding which should be significantly larger than the longest input you would expect.</li>
+        <li>N is a parameter in positional encoding which should be significantly larger than the longest input you would expect</li>
         <li>By using matrixes, we allow for computationally simple matrix multiplication to go from one encoded position to another</li>
         </ul>
         </li>
+        <br>
         <li><strong>Encoder block:</strong> The matrix containing the positional encoding of the embedding vectors is the passed into the encoding block
         <ul>
         <li>Layer normalization
@@ -114,7 +122,7 @@
         </li>
         <li>In practice, this is done via matrixes for faster computations.
         <ul>
-        <li>Little fundamentally changes, as instead of individual z1 vectors we have a matrix z holding all z1 vectors.</li>
+        <li>Little fundamentally changes, as instead of individual z1 vectors we have a matrix z holding all z1 vectors</li>
         </ul>
         </li>
         <figure class="blog-image">
@@ -125,7 +133,7 @@
         </li>
         <li>Multi-headed Self Attention mechanism intuition
         <ol>
-        <li>Multi-headed attention provides the model with a way to consider multiple positions at once, since often z1 is dominated by itself, allowing for multiple representation subspaces. Basically here's one opinion of the importance of each word, here's a second, and a third, and so on. When looking at a painting, we as humans each notice something unique, the multiple attention heads do the same.</li>
+        <li>Multi-headed attention provides the model with a way to consider multiple positions at once, since often z1 is dominated by itself, allowing for multiple representation subspaces. Basically here's one opinion of the importance of each word, here's a second, and a third, and so on. When looking at a painting, we as humans each notice something unique, the multiple attention heads do the same</li>
         <li>This works by computing 'z' n times, in the original paper, it was 8. We randomly initiate our \(W_0^Q\), \(W_0^K\), \(W_0^V\) matrixes to allow for different gradients. When we have our 8 'Z' matrixes we then concatenate our matrixes and project them back to original dimension of Z. This is for the feed forward matrix which is expecting one matrix of dimensions Z
         <ul>
         <li>Does so by concatenating our \(Z_0\) to \(Z_n\) matrixes then multiplying them by a \(W^O\) projection matrix to reduce it back to a single Z matrix rowsxcolumns</li>
@@ -150,9 +158,9 @@
         <li>Feed forward
         <ul>
         <li><a href="https://aclanthology.org/2021.emnlp-main.446.pdf">https://aclanthology.org/2021.emnlp-main.446.pdf</a></li>
-        <li>Intuitively this takes in inputted numerical representation and maps it to a latent representation space then the FNN acts as a key-value pair to produce a probability distribution over the vocabulary from the input.</li>
+        <li>Intuitively this takes in inputted numerical representation and maps it to a latent representation space then the FNN acts as a key-value pair to produce a probability distribution over the vocabulary from the input</li>
         <li>The feedforward network is a 2-layered multilayer perceptron module of weights and bias vectors along an activation function \(FFN(x)=\sigma(xW_1+b_1)W_2+b_2\). The activation function originally was a ReLU activation function</li>
-        <li>The number of neurons in the middle layer is typically larger (\~4 times) than the embedding size and is referred to as the intermediate or filter feedforward size.</li>
+        <li>The number of neurons in the middle layer is typically larger (\~4 times) than the embedding size and is referred to as the intermediate or filter feedforward size</li>
         </ul>
         </li>
         <li>Add in un-normalized data (post attention but pre second normalization)</li>
@@ -160,6 +168,7 @@
         <li>One last layer normalization</li>
         </ul>
         </li>
+        <br>
         <li><strong>Decoder block:</strong>
         <ul>
         <li>Output embedding input
@@ -180,7 +189,7 @@
         <ul>
         <li>Here we initialize our K and V matrixes with the output of the encoders from before, Q is the output of the previous attention mechanism</li>
         <li>This draws relevant information from the encodings generated by the encoders</li>
-        <li>Masking is not needed here as it attends to vectors computed before the decoder started decoding.</li>
+        <li>Masking is not needed here as it attends to vectors computed before the decoder started decoding</li>
         <li>This intuitively considers which encoded latent knowledge spaces are most relevant to our normalized 'opinion of relevance' encoding</li>
         </ul>
         </li>
@@ -191,8 +200,10 @@
         <li>Into next decoder or linear SoftMax output</li>
         </ul>
         </li>
-        <li>The output is un-embedded through a linear soft-max layer. Which turns the embedded vector into a probability vector over tokens.
+        <br>
+        <li><strong>Linear SoftMax layer:</strong>
         <ul>
+        <li>The output is un-embedded through a linear soft-max layer. Which turns the embedded vector into a probability vector over the vocabulary of tokens</li>
         <li>Linear layer
         <ul>
         <li>A simple fully connected neural network that projects the decoder output into a much larger logits vector</li>
@@ -213,7 +224,7 @@
             <figcaption>Image credit: <a href="https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)" target="_blank">Wikipedia</a></figcaption>
         </figure>
         <h3>How it is trained:</h3>
-        <p>Usually first pre-trained on a large generic dataset using self-supervising learning. Then fine-tuned on a small task-specific dataset.</p>
+        <p>Usually first pre-trained on a large generic dataset using self-supervising learning. Then fine-tuned on a small task-specific dataset</p>
         <p>Example loss functions are:</p>
         <ul>
         <li>Masked task: Correctly guessing a masked word in an input</li>
