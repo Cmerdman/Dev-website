@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/base.css?v=1.2">
     <link rel="stylesheet" href="/blog.css?v=1.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <header>
@@ -26,9 +28,227 @@
         </div>
     </header>
     <main>
-        <h1>Blog Post 1</h1>
-        <p><em>July 22, 2025</em></p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <h1>Transformers: My notes for developing an intuition</h1>
+        <p><em>August 2, 2025</em></p>
+        <figure class="blog-image">
+            <img src="/images/Transformer,_full_architecture_post1.png" alt="Transformer Architecture">
+            <figcaption>Image credit: <a href="https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)" target="_blank">Wikipedia</a></figcaption>
+        </figure>
+        <h2>The Architecture</h2>
+        <p><strong>Note:</strong></p>
+        <p>Original paper has layer normalization after attention step, however a 2020 paper(arXiv:2002.04745) showed that normalization before attention stabilizes training, removing need for learning rate warmup. That change is represented here. In the original step they do "Layer Norm(\(X+Z(X)\))" the found-to-be-better approach does "\(X+Z(\text{LayerNorm}(X))\)"</p>
+        <ol>
+        <li><strong>Tokenizing:</strong> Inputs must be tokenized into numerical representations of words
+        <ul>
+        <li>A token can represent a character or a short segment of characters</li>
+        </ul>
+        </li>
+        <li><strong>Embedding:</strong> Tokens are then embedded based on a one hot encoding of the token times an embedding matrix</li>
+        <li><strong>Positional Encoding:</strong> Embedding vectors are then mapped to a matrix by taking sin and cosine representations of the position to create a unique probability frequency representing the location of the embedding vector in the input.
+        <ul>
+        <li>Alternates matrix frequencies by sin and cos to ensure uniqueness other position 1 and 6 in a space of 5 would have the same frequency</li>
+        <li>Takes a 1xL embedding vector and creates a dxl, space where L is the length of the input and d is a determined positive even integer parameter
+        <ul>
+        <li>d is a tunable parameter and often is the same as the word embedding dimension (for easier math), often 512, 768, or 1024 by your embedding function</li>
+        </ul>
+        </li>
+        <li>N is a parameter in positional encoding which should be significantly larger than the longest input you would expect.</li>
+        <li>By using matrixes, we allow for computationally simple matrix multiplication to go from one encoded position to another</li>
+        </ul>
+        </li>
+        <li><strong>Encoder block:</strong> The matrix containing the positional encoding of the embedding vectors is the passed into the encoding block
+        <ul>
+        <li>Layer normalization
+        <ul>
+        <li><a href="https://arxiv.org/abs/1607.06450">https://arxiv.org/abs/1607.06450</a></li>
+        <li>In order to reduce training time and stabilize training we do a layer normalization on the original input matrix
+        <ol>
+        <li>Layer Norm(X)</li>
+        <li>Layer norm is just the z-score normalization with a small constant added to variance for numerical stability</li>
+        </ol>
+        </li>
+        </ul>
+        </li>
+        <li>Multi head attention
+        <ul>
+        <li>Links I used to understand
+        <ol>
+        <li><a href="https://www.reddit.com/r/MachineLearning/comments/qidpqx/d\_how\_to\_truly\_understand\_attention\_mechanism\_in/">https://www.reddit.com/r/MachineLearning/comments/qidpqx/d\_how\_to\_truly\_understand\_attention\_mechanism\_in/</a></li>
+        <li><a href="https://jalammar.github.io/illustrated-transformer/">https://jalammar.github.io/illustrated-transformer/</a></li>
+        </ol>
+        </li>
+        <li>Self-Attention mechanism intuition
+        <ol>
+        <li>To find the relative importance of each word in comparison to one word in a sentence (toy example)
+        <ol>
+        <li>We calculate the vector multiplication of word 1(q,1) across word 2 (through n, k\_1 to k\_n) to get a score
+        <ul>
+        <li>\((q_1 \cdot k_i)\) for \(i=1, \dots, d_k\)</li>
+        </ul>
+        </li>
+        <li>We divide the scores by the square root of the sentence length (key vector dimension), this leads to more stable gradients
+        <ul>
+        <li>\(\frac{q_1 \cdot k_i}{\sqrt{d_k}}\) for \(i=1, \dots, d_k\)</li>
+        </ul>
+        </li>
+        <li>We then take the SoftMax of each \(\frac{q_1 \cdot k_i}{\sqrt{d_k}}\), this gives us the relative importance of each word
+        <ul>
+        <li>\(\text{Softmax}\left(\frac{q_1 \cdot k_i}{\sqrt{d_k}}\right)\) for \(i=1, \dots, d_k\)</li>
+        </ul>
+        </li>
+        <li>We then multiply each SoftMax value (relative importance of each word to first word) to our value vector (representation of original word vector), this maintains the representation of the words we want to focus on and minimizes the presence of the insignificant words
+        <ul>
+        <li>\(v_i \cdot \text{Softmax}\left(\frac{q_1 \cdot k_i}{\sqrt{d_k}}\right)\) for \(i=1, \dots, d_k\)</li>
+        </ul>
+        </li>
+        <li>We then sum up our weighted value vectors, this produces the output of the self-attention layer, a vector representing the importance of each word in the sentence relative to a single word
+        <ul>
+        <li>\(z_1 = \sum_{i=1}^{d_k} v_i \cdot \text{Softmax}_{v_i}\left(\frac{q_1 \cdot k_i}{\sqrt{d_k}}\right)\)</li>
+        </ul>
+        </li>
+        <figure class="blog-image">
+            <img src="/images/self-attention-output_post1.png" alt="Self-Attention Output">
+            <figcaption>Image credit: <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank">Jay Alammar</a></figcaption>
+        </figure>
+        </ol>
+        </li>
+        <li>In practice, this is done via matrixes for faster computations.
+        <ul>
+        <li>Little fundamentally changes, as instead of individual z1 vectors we have a matrix z holding all z1 vectors.</li>
+        </ul>
+        </li>
+        <figure class="blog-image">
+            <img src="/images/self-attention-matrix-calculation-2_post1.png" alt="Self-Attention Matrix Calculation">
+            <figcaption>Image credit: <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank">Jay Alammar</a></figcaption>
+        </figure>
+        </ol>
+        </li>
+        <li>Multi-headed Self Attention mechanism intuition
+        <ol>
+        <li>Multi-headed attention provides the model with a way to consider multiple positions at once, since often z1 is dominated by itself, allowing for multiple representation subspaces. Basically here's one opinion of the importance of each word, here's a second, and a third, and so on. When looking at a painting, we as humans each notice something unique, the multiple attention heads do the same.</li>
+        <li>This works by computing 'z' n times, in the original paper, it was 8. We randomly initiate our \(W_0^Q\), \(W_0^K\), \(W_0^V\) matrixes to allow for different gradients. When we have our 8 'Z' matrixes we then concatenate our matrixes and project them back to original dimension of Z. This is for the feed forward matrix which is expecting one matrix of dimensions Z
+        <ul>
+        <li>Does so by concatenating our \(Z_0\) to \(Z_n\) matrixes then multiplying them by a \(W^O\) projection matrix to reduce it back to a single Z matrix rowsxcolumns</li>
+        <li>This sums our attention heads 'opinions of relevance' to one opinion</li>
+        </ul>
+        </li>
+        </ol>
+        </li>
+        </ul>
+        </li>
+        <li>Add in original input
+        <ul>
+        <li>The addition of the original input has been found to avoid vanishing gradient issues and stabilize the training process. So here we add in the normalized positional encoded embedding matrix to our attention output.
+        <ol>
+        <li>X+Z(normalized X)</li>
+        <li>(to add our opinion of relevance to our positional encoded input embedding)</li>
+        </ol>
+        </li>
+        </ul>
+        </li>
+        <li>Layer normalization</li>
+        <li>Feed forward
+        <ul>
+        <li><a href="https://aclanthology.org/2021.emnlp-main.446.pdf">https://aclanthology.org/2021.emnlp-main.446.pdf</a></li>
+        <li>Intuitively this takes in inputted numerical representation and maps it to a latent representation space then the FNN acts as a key-value pair to produce a probability distribution over the vocabulary from the input.</li>
+        <li>The feedforward network is a 2-layered multilayer perceptron module of weights and bias vectors along an activation function \(FFN(x)=\sigma(xW_1+b_1)W_2+b_2\). The activation function originally was a ReLU activation function</li>
+        <li>The number of neurons in the middle layer is typically larger (\~4 times) than the embedding size and is referred to as the intermediate or filter feedforward size.</li>
+        </ul>
+        </li>
+        <li>Add in un-normalized data (post attention but pre second normalization)</li>
+        <li>Into next encoder layer or decoder</li>
+        <li>One last layer normalization</li>
+        </ul>
+        </li>
+        <li><strong>Decoder block:</strong>
+        <ul>
+        <li>Output embedding input
+        <ul>
+        <li>The first encoder is either nothing or the previously outputted token, subsequent layers take the previous decoders output</li>
+        </ul>
+        </li>
+        <li>Normalize input</li>
+        <li>Masked Multi-head Self Attention
+        <ul>
+        <li>Same as other multi-head attention operation except here we set all future position values to be -inf, masking the values from consideration</li>
+        <li>This intuitively considers what tokens are most relevant given what it has seen before</li>
+        </ul>
+        </li>
+        <li>Add original un-normalized input to attention output</li>
+        <li>Layer normalization</li>
+        <li>Encoder decoder Multi-head Cross Attention
+        <ul>
+        <li>Here we initialize our K and V matrixes with the output of the encoders from before, Q is the output of the previous attention mechanism</li>
+        <li>This draws relevant information from the encodings generated by the encoders</li>
+        <li>Masking is not needed here as it attends to vectors computed before the decoder started decoding.</li>
+        <li>This intuitively considers which encoded latent knowledge spaces are most relevant to our normalized 'opinion of relevance' encoding</li>
+        </ul>
+        </li>
+        <li>Add in un-normalized data (post attention but pre second normalization)</li>
+        <li>Layer Normalization</li>
+        <li>Feed Forward</li>
+        <li>Add in un-normalized data (post cross attention but pre third normalization)</li>
+        <li>Into next decoder or linear SoftMax output</li>
+        </ul>
+        </li>
+        <li>The output is un-embedded through a linear soft-max layer. Which turns the embedded vector into a probability vector over tokens.
+        <ul>
+        <li>Linear layer
+        <ul>
+        <li>A simple fully connected neural network that projects the decoder output into a much larger logits vector</li>
+        <li>Intuitively this projects the output into a vector representing our entire vocabulary with an associated logit for each output</li>
+        </ul>
+        </li>
+        <li>SoftMax layer
+        <ul>
+        <li>SoftMax takes this logit vector and turns it into a probability vector adding up to 1</li>
+        <li>We then take the value with the highest probability and return the corresponding token (token since it could be a word or a punctuation)</li>
+        </ul>
+        </li>
+        </ul>
+        </li>
+        </ol>
+        <figure class="blog-image">
+            <img src="/images/Transformer,_stacked_multilayers_post1.png" alt="Transformer Stacked Multilayers">
+            <figcaption>Image credit: <a href="https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)" target="_blank">Wikipedia</a></figcaption>
+        </figure>
+        <h3>How it is trained:</h3>
+        <p>Usually first pre-trained on a large generic dataset using self-supervising learning. Then fine-tuned on a small task-specific dataset.</p>
+        <p>Example loss functions are:</p>
+        <ul>
+        <li>Masked task: Correctly guessing a masked word in an input</li>
+        <li>Autoregressive task: Entire sequence is masked, model produces an output for first token, output is revealed and error computed, does second token and so on</li>
+        <li>prefixML task: Same as above but first half of sequence is immediately available.</li>
+        <li>Translations between different languages, contexts, or modalities</li>
+        <li>Judging linguistic and pragmatic acceptability of the language</li>
+        </ul>
+        <h3>All together:</h3>
+        <p>Takes in an input and converts it to a vector, calculates the position of each token with respect to the entire input and adds the representation to the vector, then stores all the vectors as a matrix and passes it into the encoder or decoder.</p>
+        <p>The encoder takes the matrix, normalizes it, and finds the contextual relevance of each word with respect to each word; then adding this contextual importance back to the original matrix. The matrix is then normalized again and passed to a FFN which acts as key-value lookup of the matrix to the latent space returning a probability distribution over the vocabulary, which when added to our input begins the process of slowly converging on a result.</p>
+        <p>The decoder takes the input matrix representation, normalizes it, and finds the future-location-masked contextual relevance of each word with respect to each word; then adding this contextual importance back to the original matrix. The matrix is then normalized again and passed to a cross-attention system which takes in the learned encoder key and value matrixes to enrich our input with contextually relevant "information" from our latent knowledge space, this context is added back to our input. This matrix is then normalized again and passed to a FFN which acts as key-value lookup of the matrix to the latent space returning a probability distribution over the vocabulary, which when added to our input begins the process of slowly converging on a result.</p>
+        <p>Many layers later, the final matrix undergoes a linear transformation to logit representations across the vocabulary, then SoftMax returns probabilities of the logits. We then return the highest probability token.</p>
+        <p>The encoder process is repeated an incredible number of times minimizing various loss functions to create an incredibly rich and knowledgeable "brain" or latent representation of information that the decoder can pull from after training.</p>
+        <p>The decoder process is repeated until a terminal token is highest probability, whether through the models belief or via the models system prompt instructions.</p>
+        <h3>Alternate implementation mechanics:</h3>
+        <p>Different models use different:</p>
+        <ul>
+        <li>Activation functions</li>
+        <li>Normalization algorithms</li>
+        <li>Normalization locations</li>
+        <li>Positional encodings</li>
+        <li>Implementation efficiencies</li>
+        <li>Alternate attention graphs</li>
+        <li>Multimodal approaches</li>
+        </ul>
+        <h3>Links:</h3>
+        <ul>
+        <li><a href="https://peterbloem.nl/blog/transformers">https://peterbloem.nl/blog/transformers</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Transformer\_(deep\_learning\_architecture)\#Subsequent\_work">https://www.google.com/search?q=https://en.wikipedia.org/wiki/Transformer\_(deep\_learning\_architecture)\%23Subsequent\_work</a></li>
+        <li><a href="https://jalammar.github.io/illustrated-transformer/">https://jalammar.github.io/illustrated-transformer/</a></li>
+        <li><a href="https://arxiv.org/abs/1607.06450">https://arxiv.org/abs/1607.06450</a></li>
+        <li><a href="https://aclanthology.org/2021.emnlp-main.446.pdf">https://aclanthology.org/2021.emnlp-main.446.pdf</a></li>
+        <li><a href="https://www.reddit.com/r/MachineLearning/comments/qidpqx/d\_how\_to\_truly\_understand\_attention\_mechanism\_in/">https://www.reddit.com/r/MachineLearning/comments/qidpqx/d\_how\_to\_truly\_understand\_attention\_mechanism\_in/</a></li>
+        </ul>
     </main>
     <footer>
         <p></p>
